@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>添加评论实时展示  -- 动态添加li、展示淡入过程</title>
+</head>
+
+<style>
+
+*{margin:0;padding:0;}
+
+#ulbox{width:300px;height:auto;min-height:300px;border:1px #000 solid;margin:10px auto;padding-bottom: 10px;}
+#ulbox li{list-style:none;border-bottom:1px dashed #999;padding:3px;/*后面加的overflow和透明度都是为js做基础*/overflow:hidden;filter:alpha(opacity:0);opacity:0;}
+
+</style>
+
+<script src="./move.js"></script>
+
+<script>
+window.onload = function(){
+	var oTxt = document.getElementById('txt');
+	var oBtn = document.getElementById('btn');
+	var oUl = document.getElementById('ulbox');
+
+	oBtn.onclick = function(){
+
+		//创建li，将textarea里面内容写入li，并将li倒序排列
+		var oli = document.createElement('li');//创建li
+		var liList = oUl.getElementsByTagName('li'); //获取ul里面的li个数，便于下面调整顺序
+
+		oli.innerHTML = oTxt.value;//将textarea里面的内容写入到li里面
+
+		if( liList.length ){ //判断是否有li
+			oUl.insertBefore(oli,liList[0]);//有li直接将最新发布的内容插入在第一个
+		}else{
+			oUl.appendChild(oli); //没有li就将li添加到ul
+		}
+
+		oTxt.value = null;//清空textarea里面的内容
+
+		//给li添加动态效果 ---  淡入淡出
+		var liHeight = oli.offsetHeight; //获取li的高度
+		oli.style.height = 0; //此处默认将li高度设置为0
+
+		//调用运动框架
+		startMove(oli,{height:liHeight},function(){
+			startMove(oli,{opacity:100});
+		})
+
+
+	}
+
+	/****
+	
+	注意：此处用的是列表模式布局的，在ie7浏览器下面，添加li的动态效果会出现卡顿的现象；
+	解决此现象的方法就是将列表布局改为div布局；此处可参照index2-1.html
+
+	*****/
+
+}	
+</script>
+
+<body>
+<textarea name="" id="txt" cols="30" rows="10"></textarea><br />
+<input type="button" id="btn" value="发布" />
+<ul id="ulbox">
+	
+</ul>
+
+
+</body>
+</html>

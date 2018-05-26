@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>添加评论实时展示  -- 布局改善 用div</title>
+</head>
+
+<style>
+
+*{margin:0;padding:0;}
+
+#divbox{width:300px;height:auto;min-height:300px;border:1px #000 solid;margin:10px auto;padding-bottom: 10px;}
+#divbox > div{list-style:none;border-bottom:1px dashed #999;padding:3px;/*后面加的overflow和透明度都是为js做基础*/overflow:hidden;filter:alpha(opacity:0);opacity:0;}
+
+</style>
+
+<script src="./move.js"></script>
+
+<script>
+window.onload = function(){
+	var oTxt = document.getElementById('txt');
+	var oBtn = document.getElementById('btn');
+	var oDiv = document.getElementById('divbox');
+
+	oBtn.onclick = function(){
+
+		//创建li，将textarea里面内容写入li，并将li倒序排列
+		var newDiv = document.createElement('div');//创建li
+		var divList = oDiv.getElementsByTagName('div'); //获取ul里面的li个数，便于下面调整顺序
+
+		newDiv.innerHTML = oTxt.value;//将textarea里面的内容写入到li里面
+
+		if( divList.length ){ //判断是否有li
+			oDiv.insertBefore(newDiv,divList[0]);//有li直接将最新发布的内容插入在第一个
+		}else{
+			oDiv.appendChild(newDiv); //没有li就将li添加到ul
+		}
+
+		oTxt.value = null;//清空textarea里面的内容
+
+		//给li添加动态效果 ---  淡入淡出
+		var divHeight = newDiv.offsetHeight; //获取li的高度
+		newDiv.style.height = 0; //此处默认将li高度设置为0
+
+		//调用运动框架
+		startMove(newDiv,{height:divHeight},function(){
+			startMove(newDiv,{opacity:100});
+		})
+
+
+	}
+
+}	
+</script>
+
+<body>
+<textarea name="" id="txt" cols="30" rows="10"></textarea><br />
+<input type="button" id="btn" value="发布" />
+<div id="divbox">
+	
+</div>
+
+
+</body>
+</html>
