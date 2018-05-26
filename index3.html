@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>无缝滚动--布局转换</title>
+</head>
+
+<style>
+
+*{margin:0;padding:0;}
+#divbox{width:480px;height:120px;position:relative;margin:10px auto;border:1px #000 solid;overflow:hidden;}
+#divbox ul{position:absolute;left:0;}
+#divbox ul li{width:100px;height:100px;padding:10px;list-style:none;float:left;}
+#divbox ul li img{width:100px;}
+</style>
+
+<script src="./move.js"></script>
+
+<script>
+window.onload = function(){
+
+	var oDiv = document.getElementById('divbox');
+	var oUl = oDiv.getElementsByTagName('ul')[0];
+	var oLi = oUl.getElementsByTagName('li');
+	var oA = document.getElementsByTagName('a');
+	var timer = null;
+	var iSpeed = -5; //默认向左滚动
+
+	oUl.innerHTML += oUl.innerHTML;//给ul里增加一组li，避免出现空白，使首尾相接
+
+	oUl.style.width = oLi.length * oLi[0].offsetWidth + 'px';//动态设置ul的宽度
+
+	//移动函数，方便下面的调用；
+	function Move(){
+		if( oUl.offsetLeft < -oUl.offsetWidth/2 ){  //判断ul向左边移动位置与ul的宽度
+			oUl.style.left = 0; //如果左移的位置宽度小于一组ul的宽度则设置ul左边为0
+		}else if( oUl.offsetLeft > 0 ){ //判断ul向右边移动位置大于0
+			oUl.style.left = -oUl.offsetWidth/2 + 'px'; //设置ul左边为一组ul的宽度
+		}
+		oUl.style.left = oUl.offsetLeft + iSpeed +'px'; //设置ul左边位置等于左边位置加上位移速度（移动的距离）
+	}
+
+	timer = setInterval(Move,30);//默认调用Move函数
+	
+	oA[0].onclick = function(){  //点击向左滚动
+		iSpeed = -5;
+	}
+
+	oA[1].onclick = function(){ //点击向右滚动
+		iSpeed = 5;
+	}
+
+	oDiv.onmouseover = function(){ //鼠标移入div上停止滚动
+		clearInterval(timer);
+	}
+
+	oDiv.onmouseout = function(){ //鼠标移出div上继续滚动
+		timer = setInterval(Move,30);
+	}
+
+	for(var i=0;i<oLi.length;i++){  //循环li
+		oLi[i].onclick = function(){ //给每个li绑定事件
+			alert(this.innerHTML);  //此处可对li做操作
+		}
+	}
+
+}	
+</script>
+
+<body>
+
+<a href="javascript:;">向左滚动</a>
+<a href="javascript:;">向右滚动</a>
+
+<div id="divbox">
+	<ul>
+		<li><img src="./image/1.jpg" alt="" /></li>
+		<li><img src="./image/2.jpg" alt="" /></li>
+		<li><img src="./image/3.jpg" alt="" /></li>
+		<li><img src="./image/4.jpg" alt="" /></li>
+	</ul>
+</div>
+
+
+</body>
+</html>
