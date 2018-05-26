@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>滑动的菜单</title>
+</head>
+
+<style>
+
+*{margin:0;padding:0;}
+
+ul{width:400px;height:30px;position:relative;margin:100px auto;}
+ul > li{width:98px;height:28px;line-height:28px;border:1px #999 solid;text-align:center;z-index:2;cursor:pointer;list-style:none;float:left;}
+.bg{width:100px;height:8px;background:#f00;border:none;position:absolute;top:24px;left:0;z-index:1;}
+
+</style>
+
+<script src="./move.js"></script>
+
+<script>
+
+var iSpeed = 0;
+var leftVal = 0; //此处申请变量便于后面将值存于变量中
+
+window.onload = function(){
+
+	var oUl = document.getElementById('ulbox');
+	var oLi = oUl.getElementsByTagName('li');
+	var oBg = oLi[oLi.length - 1]; //最后一个li获取对象
+
+	var i = 0;
+
+	for( i=0;i<oLi.length-1;i++ ){ //将每个li，除了最后一个，都绑定事件
+
+		oLi[i].onmouseover = function(){
+			startMove(oBg,this.offsetLeft); //调用startMove方法，注意参数；
+		}
+
+	}
+}	
+
+
+function startMove(obj,iTarget){
+
+	clearInterval(obj.timer);
+
+	obj.timer = setInterval(function(){
+
+		//下面两个数字（5，0.7）均为推算出来的，这两个数字所推算出的效果对用户视觉体验较好
+		iSpeed += ( iTarget-obj.offsetLeft )/5; //此处为目标位置减去对象偏移位置值再除以5，即为速度；5为推算的，并非有特定含义
+		iSpeed *= 0.7; //此处速度乘以0.7相当于摩擦阻力；0.7也为推算
+
+		leftVal += iSpeed; //将速度累加并赋值一个变量可减小误差
+		
+		//判断速度的绝对值小于1，并且移动距离减去目标距离的绝对值小于
+		if(Math.abs(iSpeed)<1 && Math.abs(leftVal-iTarget)<1){
+
+			clearInterval(obj.timer); //如果对象到目标位置，清除定时器
+			
+			obj.style.left=iTarget+'px';//设置对象的向左偏移值等于目标点值，避免出现偏差
+
+		}else{
+			obj.style.left= leftVal +'px'; //对象未到目标位置时，设置对象的偏移值为当前走到的位置
+		}
+
+	},30);
+
+}
+</script>
+
+<body>
+
+<ul id="ulbox">
+	<li>首页</li>
+	<li>关于我们</li>
+	<li>产品</li>
+	<li>联系方式</li>
+	<li class="bg"></li>
+</ul>
+
+
+</body>
+</html>
