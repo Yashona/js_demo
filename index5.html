@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>弹性运动 ----  不适合超出范围的地方(高度小于零) </title>
+</head>
+
+<style>
+
+*{margin:0;padding:0;}
+
+#divBox{width:200px;height:30px;position:relative;margin:50px auto;background:#f00;cursor:pointer;}
+
+
+</style>
+
+<script src="./move.js"></script>
+
+<script>
+
+var iSpeed = 0;
+var heightVal = 30;
+
+window.onload = function(){
+
+	var oDiv = document.getElementById('divBox');
+
+	oDiv.onmouseover = function(){
+		startMove(this,300);
+	}
+
+	oDiv.onmouseout = function(){
+		startMove(this,30);
+	}
+
+}
+
+
+function startMove(obj,iTarget){
+
+	clearInterval(obj.timer);
+	
+	obj.timer = setInterval(function(){
+		iSpeed += (iTarget - heightVal)/5;
+		iSpeed *= 0.7;
+
+		heightVal += iSpeed;
+
+		if( Math.abs(iSpeed)<1 && Math.abs(iTarget-heightVal)<1 ){
+			clearInterval(obj.timer);
+			obj.style.height = iTarget + 'px';
+		}else{
+			obj.style.height = heightVal + 'px';
+		}
+
+		
+
+	},30)
+
+}
+</script>
+
+<body>
+<div id="divBox"></div>
+</body>
+</html>
