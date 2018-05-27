@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>碰撞运动 -- 一直运动 </title>
+</head>
+
+<style>
+
+*{margin:0;padding:0;}
+
+div{width:100px;height:100px;background:#f00;position:absolute;}
+
+</style>
+
+<script src="./move.js"></script>
+
+<script>
+
+var iSpeedX = 6;
+var iSpeedY = 8;
+
+window.onload = function(){
+	var oBtn = document.getElementById('btn');
+
+	oBtn.onclick = function(){
+		startMove()
+	}
+}	
+
+
+function startMove(){
+
+	setInterval(function(){
+
+		var oDiv = document.getElementById('divBox');
+		var l = oDiv.offsetLeft + iSpeedX;
+		var t = oDiv.offsetTop + iSpeedY;
+
+		if( t >= document.documentElement.clientHeight - oDiv.offsetHeight ){
+			iSpeedY *= -1; //乘等于负1，即将移动方向换一个方向，
+			t = document.documentElement.clientHeight - oDiv.offsetHeight; //当对象碰到浏览器底部时，将位移的值设定为浏览器高度减去对象高度的值
+		}else if( t <=0 ){
+			iSpeedY *= -1;
+			t = 0;//当对象碰到浏览器顶部时，将位移的值设定为零
+		}
+
+		if( l >= document.documentElement.clientWidth - oDiv.offsetWidth ){
+			iSpeedX *= -1; 
+			l = document.documentElement.clientWidth - oDiv.offsetWidth;
+		}else if( l <=0 ){
+			iSpeedX *= -1;
+			l = 0;
+		}
+
+		oDiv.style.left = l + 'px';
+		oDiv.style.top = t + 'px';
+
+	},30)
+
+}
+</script>
+
+<body>
+
+<input type="button" id="btn" value="点击运动" />
+
+<div id="divBox"></div>
+
+</body>
+</html>
