@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>选项卡</title>
+</head>
+
+<style>
+#div1 input{background:#ccc;}
+#div1 .active{background:#0f0;}
+#div1 div{width:200px;height: 200px;background: #ccc;display:none;}
+</style>
+<script>
+
+/* 面向过程的写法 */
+/*
+window.onload = function(){
+	var oDiv = document.getElementById('div1');
+	var aBtn = oDiv.getElementsByTagName('input');
+	var aDiv = oDiv.getElementsByTagName('div');
+	var i = 0;
+
+	for(i=0;i<aBtn.length;i++){
+		aBtn[i].index = i;
+		aBtn[i].onclick = function(){
+			for(i=0;i<aBtn.length;i++){ //此处for循环是将所有的input按钮的类名清空和div都设置成隐藏
+				aBtn[i].className = '';
+				aDiv[i].style.display = 'none';
+			}
+
+			this.className = 'active';  //此处再将点击的input按钮设置类名
+			aDiv[this.index].style.display = 'block';  //此处将对按钮索引值对应的div设置显示
+		}
+	}
+}
+*/
+
+/*  面向对象的写法 ---  相对面向过程来说写起来比较复杂，但用起来方便 */
+
+window.onload = function(){
+	var oTab = new TabSwitch('div1');
+}
+
+function TabSwitch(id){
+	var oDiv = document.getElementById(id);
+	this.aBtn = oDiv.getElementsByTagName('input');//此处前面用this指向的实例化对象oTab
+	this.aDiv = oDiv.getElementsByTagName('div');//此处前面用this指向的实例化对象oTab
+	var i= 0;
+
+	var _this = this; //此处申明_this方便下面方法中使用 --> 指向的实例化对象oTab
+
+	for(i=0;i<this.aBtn.length;i++){
+		this.aBtn[i].index = i;
+		this.aBtn[i].onclick = function(){
+			_this.tab(this);
+		}
+	}
+}
+
+TabSwitch.prototype.tab = function(oBtn){
+	for(i=0;i<this.aBtn.length;i++){
+		this.aBtn[i].className = '';
+		this.aDiv[i].style.display = 'none';
+	}
+	oBtn.className = 'active';
+	this.aDiv[oBtn.index].style.display = 'block';
+}
+
+
+
+/***
+说明：将面向过程改写为面向对象步骤：
+1.改写前提是将所有的代码都写在onload里面
+2.改写中不能有函数的嵌套，可以有全局变量
+3.改写：onload  ---->   构造函数
+		全局变量  ---->   属性
+		函数  ---->   方法
+4.发错：注意里面this的指向；
+***/
+
+
+</script>
+<body>
+
+<div id="div1">
+	<input class="active" type="button" value="选项卡1" />
+	<input type="button" value="选项卡2" />
+	<input type="button" value="选项卡3"/>
+
+	<div style="display:block;">1</div>
+	<div>2</div>
+	<div>3</div>
+</div>
+
+</body>
+</html>
