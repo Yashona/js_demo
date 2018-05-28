@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8" />
-	<title>选项卡</title>
+	<title>选项卡 ---- 面向过程 改写为  面向对象</title>
 </head>
 
 <style>
@@ -75,7 +75,9 @@ TabSwitch.prototype.tab = function(oBtn){
 3.改写：onload  ---->   构造函数
 		全局变量  ---->   属性
 		函数  ---->   方法
-4.发错：注意里面this的指向；
+4.发错：注意里面this的指向:
+		a.this出错的地方 -----  定时器  事件
+		b.解决办法 ----- 再套一层，用_this传递
 ***/
 
 
