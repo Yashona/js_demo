@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>鼠标拖拽效果   不超出浏览器范围</title>
+</head>
+<style>
+#div1{width:100px; height:100px; background:red; position:absolute;}
+</style>
+<script>
+
+window.onload = function(){
+
+	var oDiv = document.getElementById('div1');
+
+	oDiv.onmousedown = function(ev){
+
+		var oEvent = ev || event;
+		var disX = oEvent.clientX-oDiv.offsetLeft; //计算出鼠标事件ClientX方向位置与拖动对象左边的距离
+		var disY = oEvent.clientY-oDiv.offsetTop;//计算出鼠标事件ClientY方向位置与拖动对象上边的距离
+
+		document.onmousemove = function(ev){ //此处用document来绑定移动，防止鼠标移动过快会脱落
+
+			var oEvent = ev || event;
+
+			//计算出当前对象offsetLeft的值；即用鼠标当前clientX的值减去鼠标到对象的距离，并赋值给对象
+			var l = oEvent.clientX - disX;//注意必须加上 'px',否则不会报错也无事件效果
+			//计算出当前对象offsetTop的值；即用鼠标当前clientY的值减去鼠标到对象的距离，并赋值给对象
+			var t = oEvent.clientY - disY;//注意必须加上 'px',否则不会报错也无事件效果
+
+			//下面的两个判断是将对角的移动不能超过浏览器的界面
+			if( l<0 ){
+				l = 0;
+			}else if( l > document.documentElement.clientWidth - oDiv.offsetWidth ){
+				l = document.documentElement.clientWidth - oDiv.offsetWidth;
+			}
+
+			if( t<0 ){
+				t = 0;
+			}else if( t > document.documentElement.clientHeight - oDiv.offsetHeight ){
+				t = document.documentElement.clientHeight - oDiv.offsetHeight;
+			}
+
+			oDiv.style.left = l + 'px';
+			oDiv.style.top = t + 'px';
+
+		}
+
+		document.onmouseup = function(){ //此处用document来绑定鼠标弹起，防止oDiv对象脱落
+
+			document.onmousemove = null; //清除鼠标移动事件
+			document.onmouseup = null; //清除鼠标弹起事件
+
+		}
+	}
+
+}
+
+</script>
+<body>
+
+<div id="div1">
+</div>
+
+</body>
+</html>
