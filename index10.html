@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>面向对象鼠标拖拽效果   其中一个不超出浏览器窗口</title>
+</head>
+<style>
+#div1{width:100px; height:100px; background:red; position:absolute;}
+#div2{width:100px; height:100px; background:yellow; position:absolute;left:150px;}
+</style>
+<script>
+
+window.onload = function(){
+
+	new Drag('div1');
+	new LimitDrag('div2');
+
+}
+
+function Drag(id){
+
+	var _this = this;
+	this.disX = 0;
+	this.disY = 0;
+	this.oDiv = document.getElementById(id);
+	this.oDiv.onmousedown = function(ev){ //注意此处的参数，为其内部调用方法传参
+		_this.DragDown(ev);//此处传参为此方法里面的参数解决兼容性
+		return false;//此处返回false是为了解决事件关联；
+	}
+}
+
+Drag.prototype.DragDown = function(ev){
+
+	var _this = this;
+	var oEvent = ev || (event = window.event); //此处这么写是为了兼容火狐浏览器
+	this.disX = oEvent.clientX-this.oDiv.offsetLeft; //计算出鼠标事件ClientX方向位置与拖动对象左边的距离
+	this.disY = oEvent.clientY-this.oDiv.offsetTop;//计算出鼠标事件ClientY方向位置与拖动对象上边的距离
+
+	document.onmousemove = function(ev){
+		_this.DragMove(ev);
+	}
+
+	document.onmouseup = function(){
+		_this.DragUp();
+	}
+
+}
+
+Drag.prototype.DragMove = function(ev){
+
+	var oEvent = ev || (event = window.event);//此处这么写是为了兼容火狐浏览器
+
+	//计算出当前对象offsetLeft的值；即用鼠标当前clientX的值减去鼠标到对象的距离，并赋值给对象
+	var l = oEvent.clientX - this.disX;//注意必须加上 'px',否则不会报错也无事件效果
+	//计算出当前对象offsetTop的值；即用鼠标当前clientY的值减去鼠标到对象的距离，并赋值给对象
+	var t = oEvent.clientY - this.disY;//注意必须加上 'px',否则不会报错也无事件效果
+
+	this.oDiv.style.left = l + 'px';
+	this.oDiv.style.top = t + 'px';
+
+}
+
+Drag.prototype.DragUp = function(){
+	document.onmousemove = null; //清除鼠标移动事件
+	document.onmouseup = null; //清除鼠标弹起事件
+}
+
+
+
+/*****
+下面写的限制移动的对象移出浏览器窗口，注意下面的对象原型(类)；
+下面这段代码不能放在上面，即不能放在继承对象原型(类)前面；
+否则，下面代码在调整父类里面的方法时会报错；
+注意this的指向；
+*****/
+
+function LimitDrag(id){
+	Drag.call(this,id);
+}
+
+for(var i in Drag.prototype){
+	LimitDrag.prototype[i] = Drag.prototype[i];
+}
+
+LimitDrag.prototype.DragMove = function(ev){
+	
+	var oEvent = ev || (event = window.event);//此处这么写是为了兼容火狐浏览器
+
+	//计算出当前对象offsetLeft的值；即用鼠标当前clientX的值减去鼠标到对象的距离，并赋值给对象
+	var l = oEvent.clientX - this.disX;//注意必须加上 'px',否则不会报错也无事件效果
+	//计算出当前对象offsetTop的值；即用鼠标当前clientY的值减去鼠标到对象的距离，并赋值给对象
+	var t = oEvent.clientY - this.disY;//注意必须加上 'px',否则不会报错也无事件效果
+
+	//下面的两个判断是将对角的移动不能超过浏览器的界面
+	if( l<0 ){
+		l = 0;
+	}else if( l > document.documentElement.clientWidth - this.oDiv.offsetWidth ){ //此处oDiv前面要加this
+		l = document.documentElement.clientWidth - this.oDiv.offsetWidth; //此处oDiv前面要加this
+	}
+
+	if( t<0 ){
+		t = 0;
+	}else if( t > document.documentElement.clientHeight - this.oDiv.offsetHeight ){ //此处oDiv前面要加this
+		t = document.documentElement.clientHeight - this.oDiv.offsetHeight; //此处oDiv前面要加this
+	}
+
+	this.oDiv.style.left = l + 'px';
+	this.oDiv.style.top = t + 'px';
+}
+
+</script>
+<body>
+
+<div id="div1">
+</div>
+<div id="div2">
+</div>
+
+</body>
+</html>
