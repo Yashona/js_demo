@@ -52,6 +52,8 @@ window.onload = function(){
 			document.onmouseup = null; //清除鼠标弹起事件
 
 		}
+
+		return false; //此处须加返回值false，避免与其它事件冲突；
 	}
 
 }
